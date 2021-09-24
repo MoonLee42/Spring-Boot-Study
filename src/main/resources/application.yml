@@ -1,0 +1,102 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: M2nSpringBootStudy
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: SpringBootStudy-jdbc-pool
+      connection-timeout: ${MYSQL_CONNECTION_TIMEOUT}
+      idle-timeout: ${MYSQL_IDLE_TIMEOUT}
+      max-lifetime: ${MYSQL_MAX_LIFE_TIME} #30 seconds - 30 minutes
+      minimum-idle: ${MYSQL_MIN_IDLE}
+      maximum-pool-size: ${MYSQL_MAX_POOL_SIZE}
+      validation-timeout: ${MYSQL_VALIDATION_TIME}
+      data-source-properties:
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        cachePrepStmts: true
+        useServerPrepStmts: true
+        useLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
+
+# Mybatis-plus
+mybatis-plus:
+  type-enums-package: com.example.SpringBootStudy.enums
+
+# Actuator
+management:
+  health:
+    db:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /sbs/management
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: false
+
+# Self defined properties
+message:
+  greeting:
+    pattern: ${MSG_GREET_PATT}
+    defaultSentence: Hi there!
+    alsoTo:
+      - him
+      - her
+      - them
+  introduce:
+    celestialObjects:
+      - name: Moon
+        description: Natural satellite of Earth
+      - name: Earth
+        description: Third planet from Sun
+  invitation:
+    date: 2020/10/01 19:00:00
+    place: International Dark Sky Park
+  appNameInLogConfig: m2nsbslogconfig
+  bye:
+    defaultFarewell: Bye!
+    alsoWho:
+      - see
+      - you
+
+
+
+#logging:
+#  config: D:\tmp\Spring Boot Study\logging\config\logback-spring.xml
+
+---
+
+spring:
+  profiles: local
+
+SERVER_PORT: 8082
+
+MYSQL_URL: jdbc:mysql://localhost:3306/sbs?serverTimezone=Etc/GMT-10
+MYSQL_USERNAME: root
+MYSQL_PASSWORD: '111111'
+MYSQL_CONNECTION_TIMEOUT: 30000
+MYSQL_IDLE_TIMEOUT: 600000
+MYSQL_MAX_LIFE_TIME: 1800000
+MYSQL_MIN_IDLE: 10
+MYSQL_MAX_POOL_SIZE: 100
+MYSQL_VALIDATION_TIME: 5000
+
+MSG_GREET_PATT: local Hello %s
+

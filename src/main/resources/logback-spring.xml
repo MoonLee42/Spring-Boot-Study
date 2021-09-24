@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!-- Access environment properties -->
+    <springProperty scope="context" name="applicationName" source="spring.application.name" />
+
+    <!-- Logging Properties -->
+    <property name="LOG_HOME" value="D:/tmp/Spring Boot Study/logging/log"/>
+    <property name="ENCODING" value="UTF-8"/>
+    <property name="PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [${applicationName}, %X{X-B3-TraceId:-}, %X{X-B3-SpanId:-}, %X{X-Span-Export:-}] [%20.20thread] [%-5level] %50logger{50}:%-5L - %msg%n"/>
+
+    <!-- Appenders -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>${PATTERN}</Pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+    </appender>
+    <appender name="console-local" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>[LOCAL] ${PATTERN}</Pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+    </appender>
+    <appender name="console-json" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+               {
+                "level":"%10level",
+                "service":"${applicationName}",
+                "class":"%class{20}",
+                "logger":"%logger{20}",
+                "line":"%line",
+                "X-name":"%X{X-name:-}",
+                "date":"%date{yyyy-MM-dd HH:mm:ss.SSS}",
+                "message":"%msg"
+                }%n
+            </pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+    </appender>
+    <appender name="file" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_HOME}/sbs.log</file>
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+            <charset>${ENCODING}</charset>
+        </encoder>
+    </appender>
+    <appender name="rolling-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/rolling/sbs.log</file>
+        <encoder>
+            <charset>${ENCODING}</charset>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/rolling/sbs.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Profile Assignment -->
+    <springProfile name="dev">
+        <logger name="com.example.SpringBootStudy.db.rmdb.mapper" level="TRACE" additivity="false">
+            <appender-ref ref="console" />
+        </logger>
+        <logger name="com.example.SpringBootStudy.service.impl" level="TRACE" additivity="false">
+<!--            <appender-ref ref="console-json" />-->
+<!--            <appender-ref ref="file" />-->
+            <appender-ref ref="rolling-file" />
+        </logger>
+        <root level="info">
+            <appender-ref ref="console" />
+        </root>
+    </springProfile>
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="console-local" />
+        </root>
+    </springProfile>
+
+</configuration>
