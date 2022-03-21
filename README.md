@@ -267,7 +267,7 @@ _設定檔用 YAML 或是 properties 皆可，以下以 YAML 為主_
 
 ## Logback
 
-***詳見 [Logback Study](http://192.168.20.9/backend-study/logback-study/blob/master/README.md)***
+***詳見 [Logback Study](https://github.com/melee42/Logback-Study)***
 
 ## 連接資料庫
 
